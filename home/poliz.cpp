@@ -1,11 +1,81 @@
-#include "classes.h"
 #include <iostream>
+#include <string>
+#include <vector>
+
+enum OPERATOR {
+    PLUS, MINUS,
+    MULTIPLY,
+    LBRACKET, RBRACKET
+};
+
+enum LEXEM_TYPE {
+    LEXEM,
+    OPER,
+    NUMBER,
+    VARIABLE
+};
+
+class Lexem {
+public:
+    Lexem();
+    virtual LEXEM_TYPE type();
+    virtual OPERATOR getType() const;
+    virtual int getPriority() const;
+    virtual int getValue() const;
+    virtual int getValue(const int& left, const int& right);
+    virtual void print();
+};
+
+class Number : public Lexem {
+    int value;
+public:
+    Number();
+    Number(int value);
+    LEXEM_TYPE type();
+    int getValue() const;
+    void print();
+};
+
+class Oper : public Lexem {
+    OPERATOR opertype;
+    int PRIORITY[5] = {
+        -1, -1,
+        0,
+        1, 1
+    };
+public:
+    Oper();
+    Oper(char oper);
+    LEXEM_TYPE type();
+    OPERATOR getType() const;
+    int getPriority() const;
+    int getValue(const int& left, const int& right);
+    void print();
+};
+
+std::vector<Lexem *> parseLexem(std::string codeline);
+std::vector<Lexem *> buildPoliz(std::vector<Lexem *> infix);
+int evaluatePoliz(std::vector<Lexem *> poliz);
+
+int main() {
+    std::string codeline;
+    std::vector<Lexem *> infix;
+    std::vector<Lexem *> postfix;
+    int value;
+    while (std::getline(std::cin, codeline)) {
+        infix = parseLexem(codeline);
+        postfix = buildPoliz(infix);
+        value = evaluatePoliz(postfix);
+        std::cout << value << std::endl;
+    }
+    return 0;
+}
 
 Lexem::Lexem() {
 
 }
 
-int Lexem::type() {return 0;}
+LEXEM_TYPE Lexem::type() {return LEXEM;}
 OPERATOR Lexem::getType() const {return PLUS;}
 int Lexem::getPriority() const{return 0;}
 int Lexem::getValue() const {return 0;}
@@ -20,8 +90,8 @@ Number::Number(int value) {
     this->value = value;
 }
 
-int Number::type() {
-    return 1;
+LEXEM_TYPE Number::type() {
+    return NUMBER;
 }
 
 int Number::getValue() const {
@@ -54,8 +124,8 @@ Oper::Oper(char oper) {
     }
 }
 
-int Oper::type() {
-    return 2;
+LEXEM_TYPE Oper::type() {
+    return OPER;
 }
 
 OPERATOR Oper::getType() const {
@@ -70,33 +140,33 @@ int Oper::getValue(const int& left, const int& right) {
     int l = left;
     int r = right;
     switch (this->getType()) {
-    case 0:
-        return l + r;
-    case 1:
-        return l - r;
-    case 2:
-        return l * r;
+        case PLUS:
+            return l + r;
+        case MINUS:
+            return l - r;
+        case MULTIPLY:
+            return l * r;
     }
     return 0;
 }
 
 void Oper::print() {
     switch (opertype) {
-    case 0:
-        std::cout << '+';
-        break;
-    case 1:
-        std::cout << '-';
-        break;
-    case 2:
-        std::cout << '*';
-        break;
-    case 3:
-        std::cout << '(';
-        break;
-    case 4:
-        std::cout << ')';
-        break;
+        case PLUS:
+            std::cout << '+';
+            break;
+        case MINUS:
+            std::cout << '-';
+            break;
+        case MULTIPLY:
+            std::cout << '*';
+            break;
+        case LBRACKET:
+            std::cout << '(';
+            break;
+        case RBRACKET:
+            std::cout << ')';
+            break;
     }
 }
 
@@ -129,9 +199,9 @@ std::vector<Lexem *> buildPoliz(std::vector<Lexem *> infix) {
     std::vector<Lexem *> operators;
     std::vector<Lexem *> result;
     for (int i = 0; i < infix.size(); i++) {
-        if (infix[i]->type() == 1) {
+        if (infix[i]->type() == NUMBER) {
             result.push_back(infix[i]);
-        } else if (infix[i]->type() == 2) {
+        } else if (infix[i]->type() == OPER) {
             if (operators.empty()) {
                 operators.push_back(infix[i]);
             } else {
@@ -168,9 +238,9 @@ int evaluatePoliz(std::vector<Lexem *> poliz) {
     std::cout << std::endl;
     std::vector<int> stack;
     for (int i = 0; i < poliz.size(); i++) {
-        if (poliz[i]->type() == 1) {
+        if (poliz[i]->type() == NUMBER) {
             stack.push_back(poliz[i]->getValue());
-        } else if (poliz[i]->type() == 2) {
+        } else if (poliz[i]->type() == OPER) {
             int tmp2 = stack.back();
             stack.pop_back();
             int tmp1 = stack.back();
