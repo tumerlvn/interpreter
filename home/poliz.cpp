@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 enum OPERATOR {
+    LBRACKET, RBRACKET,
+    ASSIGN,
     PLUS, MINUS,
-    MULTIPLY,
-    LBRACKET, RBRACKET
+    MULTIPLY
 };
 
 enum LEXEM_TYPE {
@@ -38,11 +40,7 @@ public:
 
 class Oper : public Lexem {
     OPERATOR opertype;
-    int PRIORITY[5] = {
-        -1, -1,
-        0,
-        1, 1
-    };
+    static int PRIORITY[];
 public:
     Oper();
     Oper(char oper);
@@ -52,6 +50,17 @@ public:
     int getValue(const int& left, const int& right);
     void print();
 };
+
+class Variable : public Lexem {
+    std::string name;
+public:
+    Variable();
+    int getValue();
+    void setValue(int value);
+    LEXEM_TYPE type();
+};
+
+std::map<std::string, Variable*> MAP_OF_VARS;
 
 std::vector<Lexem *> parseLexem(std::string codeline);
 std::vector<Lexem *> buildPoliz(std::vector<Lexem *> infix);
@@ -63,13 +72,22 @@ int main() {
     std::vector<Lexem *> postfix;
     int value;
     while (std::getline(std::cin, codeline)) {
-        infix = parseLexem(codeline);
-        postfix = buildPoliz(infix);
-        value = evaluatePoliz(postfix);
-        std::cout << value << std::endl;
+        if (!codeline.empty()) {
+            infix = parseLexem(codeline);
+            postfix = buildPoliz(infix);
+            value = evaluatePoliz(postfix);
+            std::cout << value << std::endl;
+        }
     }
     return 0;
 }
+
+int Oper::PRIORITY[] = {
+    -1, -1,
+    0,
+    1, 1,
+    2
+};
 
 Lexem::Lexem() {
 
@@ -106,21 +124,25 @@ void Number::print() {
 
 Oper::Oper(char oper) {
     switch (oper) {
-    case '+':
-        opertype = PLUS;
-        break;
-    case '-':
-        opertype = MINUS;
-        break;
-    case '*':
-        opertype = MULTIPLY;
-        break;
-    case '(':
-        opertype = LBRACKET;
-        break;
-    case ')':
-        opertype = RBRACKET;
-        break;
+        case '+':
+            opertype = PLUS;
+            break;
+        case '-':
+            opertype = MINUS;
+            break;
+        case '*':
+            opertype = MULTIPLY;
+            break;
+        case '(':
+            opertype = LBRACKET;
+            break;
+        case ')':
+            opertype = RBRACKET;
+            break;
+        case '=':
+            opertype = ASSIGN;
+            break;
+
     }
 }
 
@@ -204,22 +226,20 @@ std::vector<Lexem *> buildPoliz(std::vector<Lexem *> infix) {
         } else if (infix[i]->type() == OPER) {
             if (operators.empty()) {
                 operators.push_back(infix[i]);
-            } else {
-                if (infix[i]->getType() == 3) {
-                    operators.push_back(infix[i]);
-                } else if (infix[i]->getType() == 4) {
-                    while (operators.back()->getType() != 3) {
-                        result.push_back(operators.back());
-                        operators.pop_back();
-                    }
-                    operators.pop_back();
-                } else if (operators.back()->getPriority() >= infix[i]->getPriority() && operators.back()->getType() != 3) {
+            } else if (infix[i]->getType() == LBRACKET) {
+                operators.push_back(infix[i]);
+            } else if (infix[i]->getType() == RBRACKET) {
+                while (operators.back()->getType() != LBRACKET) {
                     result.push_back(operators.back());
                     operators.pop_back();
-                    operators.push_back(infix[i]);
-                } else {
-                    operators.push_back(infix[i]);
                 }
+                operators.pop_back();
+            } else if (operators.back()->getPriority() >= infix[i]->getPriority() && operators.back()->getType() != 3) {
+                result.push_back(operators.back());
+                operators.pop_back();
+                operators.push_back(infix[i]);
+            } else {
+                operators.push_back(infix[i]);
             }
         }
     }
