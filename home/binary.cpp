@@ -6,8 +6,31 @@
 enum OPERATOR {
     LBRACKET, RBRACKET,
     ASSIGN,
+    OR,
+    AND,
+    BITOR,
+    XOR,
+    BITAND,
+    EQ, NEQ,
+    SHL, SHR,
+    LEQ, LT, GEQ, GT,
     PLUS, MINUS,
-    MULTIPLY
+    MULTIPLY, DIV, MOD
+};
+
+const std::string OPERTEXT[] = {
+    "(", ")",
+    "=",
+    "or",
+    "and",
+    "|",
+    "^",
+    "&",
+    "==", "!=",
+    "<<", ">>",
+    "<=", "<", ">=", ">",
+    "+", "-",
+    "*", "/", "%"
 };
 
 enum LEXEM_TYPE {
@@ -41,7 +64,7 @@ public:
 
 class Oper : public Lexem {
     OPERATOR opertype;
-    static int PRIORITY[];
+    static const int PRIORITY[];
 public:
     Oper();
     Oper(char oper);
@@ -65,6 +88,7 @@ public:
 
 std::map<std::string, int> MAP_OF_VARS;
 
+Lexem* getOper();
 std::vector<Lexem *> parseLexem(std::string codeline);
 std::vector<Lexem *> buildPoliz(std::vector<Lexem *> infix);
 int evaluatePoliz(std::vector<Lexem *> poliz);
@@ -85,11 +109,19 @@ int main() {
     return 0;
 }
 
-int Oper::PRIORITY[] = {
+const int Oper::PRIORITY[] = {
     -1, -1,
     0,
-    1, 1,
-    2
+    1,
+    2,
+    3,
+    4,
+    5,
+    6, 6,
+    7, 7,
+    8, 8, 8, 8,
+    9, 9,
+    10, 10, 10
 };
 
 Lexem::Lexem() {
