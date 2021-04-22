@@ -4,6 +4,7 @@
 #include <vector>
 #include "lexem.h"
 
-std::vector<Lexem *> buildPoliz(std::vector<Lexem *> infix);
+std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix);
+void joinGotoAndLabel(Variable *lexemvar, std::vector<Lexem *> &operators);
 
 #endif

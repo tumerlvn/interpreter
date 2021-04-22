@@ -5,6 +5,6 @@
 #include "lexem.h"
 
 
-int evaluatePoliz(std::vector<Lexem *> poliz);
+int evaluatePoliz(std::vector<Lexem *> poliz, int row);
 
 #endif

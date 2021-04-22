@@ -44,6 +44,10 @@ Oper::Oper(std::string oper) {
     }
 }
 
+Oper::Oper(OPERATOR opertype) {
+    this->opertype = opertype;
+}
+
 LEXEM_TYPE Oper::type() {
     return OPER;
 }
@@ -170,4 +174,28 @@ LEXEM_TYPE Variable::type() {
 
 void Variable::print() {
     std::cout << "(" << name << ", " << this->getValue() << ")";
+}
+
+bool Variable::inLabelTable() {
+    return (LABELS.find(this->name) != LABELS.end());
+}
+
+std::string Variable::getName() {
+    return name;
+}
+
+Goto::Goto(OPERATOR opertype) : Oper(opertype) {
+    row = UNDEFINED;
+}
+
+void Goto::setRow(int row) {
+    this->row = row;
+}
+
+int Goto::getRow() {
+    return row;
+}
+
+void Goto::print() {
+    std::cout << "[<row " << row << ">" << OPERTEXT[this->getType()] << "] ";
 }

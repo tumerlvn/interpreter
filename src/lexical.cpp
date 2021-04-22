@@ -88,3 +88,20 @@ std::vector<Lexem *> parseLexem(const std::string &codeline) {
     }
     return res;
 }
+
+void initLabels(std::vector <Lexem *> &infix, int row) {
+    for (int i = 1; i < (int)infix.size(); i++) {
+        if (infix[i-1]->type() == VARIABLE && infix[i]->type() == OPER) {
+            Variable *lexemvar = (Variable *)infix[i-1];
+            Oper *lexemop = (Oper *)infix[i];
+            if (lexemop->getType() == COLON) {
+                LABELS[lexemvar->getName()] = row;
+                delete infix[i-1];
+                delete infix[i];
+                infix[i-1] = nullptr;
+                infix[i] = nullptr;
+                i++;
+            }
+        }
+    }
+}

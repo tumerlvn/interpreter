@@ -1,8 +1,8 @@
 #include "const.h"
 
 const int PRIORITY[] = {
+    -2, -2, -2,
     -1, -1,
-    0,
     1,
     2,
     3,
@@ -16,8 +16,8 @@ const int PRIORITY[] = {
 };
 
 const std::string OPERTEXT[] = {
+    "goto", ":=", ":",
     "(", ")",
-    "=",
     "or",
     "and",
     "|",
@@ -33,3 +33,4 @@ const std::string OPERTEXT[] = {
 const int OP_NUM = sizeof(OPERTEXT)/sizeof(OPERTEXT[0]);
 
 std::map<std::string, int> MAP_OF_VARS;
+std::map<std::string, int> LABELS;
