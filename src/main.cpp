@@ -36,6 +36,8 @@ int main() {
         initLabels(infixLines[row], row);
     }
 
+    initJumps(infixLines);
+
     for (const auto &infix: infixLines) {
         postfixLines.push_back(buildPostfix(infix));
     }

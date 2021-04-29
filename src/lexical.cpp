@@ -22,7 +22,10 @@ Lexem* getOper(const std::string &codeline, int pos, int &next) {
             codeline.substr(pos, OPERTEXT[op].size());
         if (OPERTEXT[op] == subcodeline) {
             next = pos + OPERTEXT[op].size();
-            return new Oper(OPERTEXT[op]);
+            if (op == GOTO || op == IF || op == ELSE ||
+                op == WHILE || op == ENDWHILE)
+                return new Goto((OPERATOR)op);
+            return new Oper((OPERATOR)op);
         }
     }
     return nullptr;
@@ -101,6 +104,49 @@ void initLabels(std::vector <Lexem *> &infix, int row) {
                 infix[i-1] = nullptr;
                 infix[i] = nullptr;
                 i++;
+            }
+        }
+    }
+}
+
+void initJumps(std::vector <std::vector <Lexem *>> &infixLines) {
+    std::stack<Goto *> stackOfGoto;
+    for (int row = 0; row < infixLines.size(); row++) {
+        //std::cout << "row: " << row << std::endl;
+        for (int i = 0; i < infixLines[row].size(); i++) {
+            //std::cout << " word: " << i << std::endl;
+            if (infixLines[row].at(i) != nullptr && infixLines[row].at(i)->type() == OPER) {
+                //std::cout << "row: " << row << " word: " << i << std::endl;
+                Oper *lexemoper = (Oper *)infixLines[row].at(i);
+                Goto *lexemgoto = nullptr;
+
+                switch (lexemoper->getType()) {
+                case IF:
+                    stackOfGoto.push((Goto *)lexemoper);
+                    break;
+                case ELSE:
+                    stackOfGoto.top()->setRow(row + 1);
+                    stackOfGoto.pop();
+                    stackOfGoto.push((Goto *)lexemoper);
+                    break;
+                case ENDIF:
+                    // delete lexemoper;
+                    // lexemoper = nullptr;
+                    stackOfGoto.top()->setRow(row + 1);
+                    stackOfGoto.pop();
+                    break;
+                case WHILE:
+                    lexemgoto = (Goto *)lexemoper;
+                    lexemgoto->setRow(row);
+                    stackOfGoto.push(lexemgoto);
+                    break;
+                case ENDWHILE:
+                    lexemgoto = (Goto *)lexemoper;
+                    lexemgoto->setRow(stackOfGoto.top()->getRow());
+                    stackOfGoto.top()->setRow(row + 1);
+                    stackOfGoto.pop();
+                    break;
+                }
             }
         }
     }

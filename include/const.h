@@ -5,6 +5,9 @@
 #include <map>
 
 enum OPERATOR {
+    IF, THEN,
+    ELSE, ENDIF,
+    WHILE, ENDWHILE,
     GOTO, ASSIGN, COLON,
     LBRACKET, RBRACKET,
     OR,

@@ -130,17 +130,17 @@ Lexem* Oper::getValue(Lexem* left, Lexem* right) {
         break;
     }
 
-    if (left->type() == NUMBER) {
-        delete (Number*)left;
-    } else if (left->type() == VARIABLE) {
-        delete (Variable*)left;
-    }
-
-    if (right->type() == NUMBER) {
-        delete (Number*)right;
-    } else if (right->type() == VARIABLE) {
-        delete (Variable*)right;
-    }
+    // if (left->type() == NUMBER) {
+    //     delete (Number*)left;
+    // } else if (left->type() == VARIABLE) {
+    //     delete (Variable*)left;
+    // }
+    //
+    // if (right->type() == NUMBER) {
+    //     delete (Number*)right;
+    // } else if (right->type() == VARIABLE) {
+    //     delete (Variable*)right;
+    // }
     // delete left;
     // delete right;
     return result;

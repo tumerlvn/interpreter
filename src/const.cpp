@@ -1,6 +1,9 @@
 #include "const.h"
 
 const int PRIORITY[] = {
+    -2, -2,
+    -2, -2,
+    -2, -2,
     -2, -2, -2,
     -1, -1,
     1,
@@ -16,6 +19,9 @@ const int PRIORITY[] = {
 };
 
 const std::string OPERTEXT[] = {
+    "if", "then",
+    "else", "endif",
+    "while", "endwhile",
     "goto", ":=", ":",
     "(", ")",
     "or",

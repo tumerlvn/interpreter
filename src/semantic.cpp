@@ -3,10 +3,10 @@
 #include <iostream>
 
 int evaluatePoliz(std::vector<Lexem *> poliz, int row) {
-    // // for (int i = 0; i < poliz.size(); i++) {
-    // //     std::cout << "|";
-    // //     poliz[i]->print();
-    // // }
+    // for (int i = 0; i < poliz.size(); i++) {
+    //     std::cout << "|";
+    //     poliz[i]->print();
+    // }
     // std::cout << std::endl;
     std::vector<Lexem*> stack;
     for (int i = 0; i < poliz.size(); i++) {
@@ -15,9 +15,16 @@ int evaluatePoliz(std::vector<Lexem *> poliz, int row) {
         } else if (poliz[i]->type() == VARIABLE) {
             stack.push_back(poliz[i]);
         } else if (poliz[i]->type() == OPER) {
-            if (poliz[i]->getType() == GOTO) {
+            if (poliz[i]->getType() == GOTO || poliz[i]->getType() == ELSE || poliz[i]->getType() == ENDWHILE) {
                 Goto *lexemgoto = (Goto *)poliz[i];
                 return lexemgoto->getRow();
+            } else if (poliz[i]->getType() == IF || poliz[i]->getType() == WHILE) {
+                Goto *lexemgoto = (Goto *)poliz[i];
+                int rvalue = (int)stack.back()->getValue();
+                stack.pop_back();
+                if (!rvalue) {
+                    return lexemgoto->getRow();
+                }
             } else {
                 Lexem* tmp2 = stack.back();
                 stack.pop_back();

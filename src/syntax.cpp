@@ -1,37 +1,6 @@
 #include "syntax.h"
 
-// std::vector<Lexem *> buildPostfix(std::vector<Lexem *> infix) {
-//     std::vector<Lexem *> operators;
-//     std::vector<Lexem *> result;
-//     for (int i = 0; i < infix.size(); i++) {
-//         if (infix[i]->type() == NUMBER || infix[i]->type() == VARIABLE) {
-//             result.push_back(infix[i]);
-//         } else if (infix[i]->type() == OPER) {
-//             if (operators.empty()) {
-//                 operators.push_back(infix[i]);
-//             } else if (infix[i]->getType() == LBRACKET) {
-//                 operators.push_back(infix[i]);
-//             } else if (infix[i]->getType() == RBRACKET) {
-//                 while (operators.back()->getType() != LBRACKET) {
-//                     result.push_back(operators.back());
-//                     operators.pop_back();
-//                 }
-//                 operators.pop_back();
-//             } else if (operators.back()->getPriority() >= infix[i]->getPriority() && operators.back()->getType() != LBRACKET) {
-//                 result.push_back(operators.back());
-//                 operators.pop_back();
-//                 operators.push_back(infix[i]);
-//             } else {
-//                 operators.push_back(infix[i]);
-//             }
-//         }
-//     }
-//     while (!operators.empty()) {
-//         result.push_back(operators.back());
-//         operators.pop_back();
-//     }
-//     return result;
-// }
+#include <iostream>
 
 std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
     std::vector<Lexem *> operators;
@@ -51,6 +20,12 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
             result.push_back(lexem);
         } else if (lexem->type() == OPER) {
             //Oper *lexemoper = (Oper *)lexem;
+            if (lexem->getType() == ENDIF || lexem->getType() == THEN) {
+                // lexem->print();
+                // std::cout << std::endl;
+                continue;
+            }
+
             if (operators.empty()) {
                 operators.push_back(lexem);
             } else if (lexem->getType() == LBRACKET) {
@@ -74,6 +49,11 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
         result.push_back(operators.back());
         operators.pop_back();
     }
+    // for (int i = 0; i < result.size(); i++) {
+    //     std::cout << "|";
+    //     result[i]->print();
+    // }
+    // std::cout << std::endl;
     return result;
 }
 
