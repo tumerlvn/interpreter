@@ -6,5 +6,6 @@
 
 std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix);
 void joinGotoAndLabel(Variable *lexemvar, std::vector<Lexem *> &operators);
+//void cleanBrackets(std::vector<Lexem *> &brackets);
 
 #endif

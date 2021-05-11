@@ -188,6 +188,10 @@ Goto::Goto(OPERATOR opertype) : Oper(opertype) {
     row = UNDEFINED;
 }
 
+LEXEM_TYPE Goto::type() {
+    return OPERGOTO;
+}
+
 void Goto::setRow(int row) {
     this->row = row;
 }

@@ -58,6 +58,7 @@ class Goto : public Oper {
 public:
     enum {UNDEFINED = -INT32_MAX};
     Goto (OPERATOR opertype);
+    LEXEM_TYPE type();
     void setRow(int row);
     int getRow();
     void print();

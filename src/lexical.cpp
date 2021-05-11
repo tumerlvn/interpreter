@@ -18,13 +18,12 @@ bool isVariable(char ch) {
 
 Lexem* getOper(const std::string &codeline, int pos, int &next) {
     for (int op = 0; op < OP_NUM; op++) {
-        std::string subcodeline =
-            codeline.substr(pos, OPERTEXT[op].size());
+        std::string subcodeline = codeline.substr(pos, OPERTEXT[op].size());
         if (OPERTEXT[op] == subcodeline) {
             next = pos + OPERTEXT[op].size();
-            if (op == GOTO || op == IF || op == ELSE ||
-                op == WHILE || op == ENDWHILE)
+            if (op == GOTO || op == IF || op == ELSE || op == WHILE || op == ENDWHILE) {
                 return new Goto((OPERATOR)op);
+            }
             return new Oper((OPERATOR)op);
         }
     }
@@ -51,7 +50,7 @@ Lexem* getNum(const std::string &codeline, int pos, int &next) {
 Lexem* scanVar(const std::string &codeline, int pos, int &next) {
     std::string variable;
     int i = 0;
-    for (; i < codeline.size(), isVariable(codeline[pos + i]); i++) {
+    for (; i < codeline.size() && isVariable(codeline[pos + i]); i++) {
 
     }
     if (i != 0) {
@@ -99,8 +98,8 @@ void initLabels(std::vector <Lexem *> &infix, int row) {
             Oper *lexemop = (Oper *)infix[i];
             if (lexemop->getType() == COLON) {
                 LABELS[lexemvar->getName()] = row;
-                delete infix[i-1];
-                delete infix[i];
+                delete (Variable *)infix[i-1];
+                delete (Oper *)infix[i];
                 infix[i-1] = nullptr;
                 infix[i] = nullptr;
                 i++;
@@ -115,7 +114,7 @@ void initJumps(std::vector <std::vector <Lexem *>> &infixLines) {
         //std::cout << "row: " << row << std::endl;
         for (int i = 0; i < infixLines[row].size(); i++) {
             //std::cout << " word: " << i << std::endl;
-            if (infixLines[row].at(i) != nullptr && infixLines[row].at(i)->type() == OPER) {
+            if (infixLines[row].at(i) != nullptr && infixLines[row].at(i)->type() == OPERGOTO) {
                 //std::cout << "row: " << row << " word: " << i << std::endl;
                 Oper *lexemoper = (Oper *)infixLines[row].at(i);
                 Goto *lexemgoto = nullptr;

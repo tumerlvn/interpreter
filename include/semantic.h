@@ -5,6 +5,8 @@
 #include "lexem.h"
 
 
-int evaluatePoliz(std::vector<Lexem *> poliz, int row);
+int evaluatePoliz(std::vector<Lexem *> &poliz, int row);
+void clean(std::vector<Lexem *> &cleaner);
+void clean(std::vector<std::vector<Lexem *>> &cleaner);
 
 #endif

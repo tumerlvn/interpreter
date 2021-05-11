@@ -5,6 +5,7 @@
 std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
     std::vector<Lexem *> operators;
     std::vector<Lexem *> result;
+    //std::vector<Lexem *> brackets;
     for (const auto &lexem: infix) {
         if (lexem == nullptr)
             continue;
@@ -18,7 +19,7 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
             }
         } else if (lexem->type() == NUMBER) {
             result.push_back(lexem);
-        } else if (lexem->type() == OPER) {
+        } else if (lexem->type() == OPER || lexem->type() == OPERGOTO) {
             //Oper *lexemoper = (Oper *)lexem;
             if (lexem->getType() == ENDIF || lexem->getType() == THEN) {
                 // lexem->print();
@@ -26,11 +27,13 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
                 continue;
             }
 
-            if (operators.empty()) {
+            if (lexem->getType() == LBRACKET) {
+                //brackets.push_back(lexem);
                 operators.push_back(lexem);
-            } else if (lexem->getType() == LBRACKET) {
+            } else if (operators.empty()) {
                 operators.push_back(lexem);
             } else if (lexem->getType() == RBRACKET) {
+                //brackets.push_back(lexem);
                 while (operators.back()->getType() != LBRACKET) {
                     result.push_back(operators.back());
                     operators.pop_back();
@@ -54,6 +57,7 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
     //     result[i]->print();
     // }
     // std::cout << std::endl;
+    //cleanBrackets(brackets);
     return result;
 }
 
@@ -61,5 +65,12 @@ void joinGotoAndLabel(Variable *lexemvar, std::vector<Lexem *> &operators) {
     if (operators.back()->getType() == GOTO) {
         Goto *lexemgoto = (Goto *)operators.back();
         lexemgoto->setRow(LABELS[lexemvar->getName()]);
+    }
+}
+
+void cleanBrackets(std::vector<Lexem *> &brackets) {
+    for (Lexem *bracket: brackets) {
+        delete (Oper *)bracket;
+        bracket = nullptr;
     }
 }

@@ -26,7 +26,8 @@ enum LEXEM_TYPE {
     LEXEM,
     OPER,
     NUMBER,
-    VARIABLE
+    VARIABLE,
+    OPERGOTO
 };
 
 
