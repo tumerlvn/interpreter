@@ -2,6 +2,7 @@
 #define _LEXEM_H
 
 #include <string>
+#include <vector>
 #include "const.h"
 
 class Lexem {
@@ -50,6 +51,7 @@ public:
     LEXEM_TYPE type();
     void print();
     bool inLabelTable();
+    bool inArrayTable();
     std::string getName();
 };
 
@@ -63,5 +65,27 @@ public:
     int getRow();
     void print();
 };
+
+class ArrayElement;
+
+class Array {
+    std::vector<int> data;
+    friend class ArrayElement;
+public:
+    Array(int size);
+    Lexem *getElement(int index);
+};
+
+class ArrayElement : public Lexem {
+    int *data;
+public:
+    ArrayElement();
+    ArrayElement(Array *array, int index);
+    LEXEM_TYPE type();
+    int getValue() const;
+    void setValue(int value);
+};
+
+extern std::map<std::string, Array *> ARRAY_TABLE;
 
 #endif

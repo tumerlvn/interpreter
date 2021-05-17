@@ -98,14 +98,38 @@ void initLabels(std::vector <Lexem *> &infix, int row) {
             Oper *lexemop = (Oper *)infix[i];
             if (lexemop->getType() == COLON) {
                 LABELS[lexemvar->getName()] = row;
-                delete (Variable *)infix[i-1];
-                delete (Oper *)infix[i];
+                delete (Variable *)lexemvar;
+                delete (Oper *)lexemop;
                 infix[i-1] = nullptr;
                 infix[i] = nullptr;
                 i++;
             }
         }
     }
+}
+
+ERROR_CODES initArrays(std::vector <Lexem *> &infix, int row) {
+    for (int i = 2; i < (int)infix.size(); i++) {
+        if (infix[i-2]->type() == VARIABLE && infix[i-1]->type() == OPER && infix[i]->type() == NUMBER) {
+            Variable *lexemvar = (Variable *)infix[i-2];
+            Oper *lexemop = (Oper *)infix[i-1];
+            Number *lexemnum = (Number *)infix[i];
+            if (lexemop->getType() == SIZE) {
+                if (lexemnum->getValue() <= 0) {
+                    return ARRAY_WRONG_SIZE;
+                }
+                ARRAY_TABLE[lexemvar->getName()] = new Array(lexemnum->getValue());
+                delete (Variable *)lexemvar;
+                delete (Oper *)lexemop;
+                delete (Number *)lexemnum;
+                infix[i-2] = nullptr;
+                infix[i-1] = nullptr;
+                infix[i] = nullptr;
+                i += 2;
+            }
+        }
+    }
+    return WORKS_FINE;
 }
 
 void initJumps(std::vector <std::vector <Lexem *>> &infixLines) {

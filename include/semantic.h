@@ -2,6 +2,8 @@
 #define _SEMANTIC_H
 
 #include <vector>
+#include <map>
+#include <string>
 #include "lexem.h"
 
 

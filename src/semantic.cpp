@@ -14,7 +14,7 @@ int evaluatePoliz(std::vector<Lexem *> &poliz, int row) {
     for (int i = 0; i < poliz.size(); i++) {
         if (poliz[i]->type() == NUMBER) {
             stack.push_back(poliz[i]);
-        } else if (poliz[i]->type() == VARIABLE) {
+        } else if (poliz[i]->type() == VARIABLE || poliz[i]->type() == ARRAY_ELEMENT) {
             stack.push_back(poliz[i]);
         } else if (poliz[i]->type() == OPER || poliz[i]->type() == OPERGOTO) {
             if (poliz[i]->getType() == GOTO || poliz[i]->getType() == ELSE || poliz[i]->getType() == ENDWHILE) {
@@ -66,6 +66,9 @@ void clean(std::vector<Lexem *> &cleaner) {
         case OPERGOTO:
             delete (Goto *)lexem;
             break;
+        case ARRAY_ELEMENT:
+            delete (ArrayElement *)lexem;
+            break;
         }
         lexem = nullptr;
     }
@@ -97,5 +100,8 @@ void clean(std::vector<std::vector<Lexem *>> &cleaner) {
                 lexem = nullptr;
             }
         }
+    }
+    for (std::map<std::string, Array *>::iterator it = ARRAY_TABLE.begin(); it != ARRAY_TABLE.end(); ++it) {
+        delete it->second;
     }
 }

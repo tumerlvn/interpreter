@@ -5,10 +5,12 @@
 #include <map>
 
 enum OPERATOR {
+    SIZE,
     IF, THEN,
     ELSE, ENDIF,
     WHILE, ENDWHILE,
     GOTO, ASSIGN, COLON,
+    LSQUARE, RSQUARE,
     LBRACKET, RBRACKET,
     OR,
     AND,
@@ -27,14 +29,20 @@ enum LEXEM_TYPE {
     OPER,
     NUMBER,
     VARIABLE,
-    OPERGOTO
+    OPERGOTO,
+    ARRAY_ELEMENT
 };
 
+enum ERROR_CODES {
+    WORKS_FINE,
+    ARRAY_WRONG_SIZE
+};
 
 extern const int PRIORITY[];
 extern const std::string OPERTEXT[];
 extern const int OP_NUM;
 extern std::map<std::string, int> MAP_OF_VARS;
 extern std::map<std::string, int> LABELS;
+
 
 #endif

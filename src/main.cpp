@@ -10,6 +10,7 @@
 int main() {
     std::string codeline;
     std::vector <std::vector <Lexem*>> infixLines, postfixLines;
+    ERROR_CODES code = WORKS_FINE;
 
     while (std::getline(std::cin, codeline)) {
         infixLines.push_back(parseLexem(codeline));
@@ -17,6 +18,14 @@ int main() {
 
     for (int row = 0; row < (int)infixLines.size(); row++) {
         initLabels(infixLines[row], row);
+    }
+
+    for (int row = 0; row < (int)infixLines.size(); row++) {
+        code = initArrays(infixLines[row], row);
+    }
+
+    for (std::map<std::string, Array *>::iterator it = ARRAY_TABLE.begin(); it != ARRAY_TABLE.end(); ++it) {
+        std::cout << it->first << std::endl;
     }
 
     initJumps(infixLines);

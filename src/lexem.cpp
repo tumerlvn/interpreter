@@ -62,6 +62,7 @@ int Oper::getPriority() const {
 
 Lexem* Oper::getValue(Lexem* left, Lexem* right) {
     int l = left->getValue();
+
     int r = right->getValue();
     Lexem* result;
     switch (this->getType()) {
@@ -75,12 +76,19 @@ Lexem* Oper::getValue(Lexem* left, Lexem* right) {
         result = new Number(l * r);
         break;
     case ASSIGN:
-        if (left->type() == VARIABLE) {
+        if (left->type() == VARIABLE || left->type() == ARRAY_ELEMENT) {
             left->setValue(r);
             //std::cout << ((Variable*)left)->getValue();
             result = new Number(left->getValue());
         } else {
             result = new Number(l);
+        }
+        break;
+    case LSQUARE:
+        if (left->type() == VARIABLE && ((Variable *)left)->inArrayTable()) {
+            result = ARRAY_TABLE[((Variable *)left)->getName()]->getElement(r);
+        } else {
+            result = new Number(0);
         }
         break;
     case OR:
@@ -114,7 +122,7 @@ Lexem* Oper::getValue(Lexem* left, Lexem* right) {
         result = new Number(l <= r);
         break;
     case LT:
-        result = new Number(l <= r);
+        result = new Number(l < r);
         break;
     case GEQ:
         result = new Number(l >= r);
@@ -180,6 +188,10 @@ bool Variable::inLabelTable() {
     return (LABELS.find(this->name) != LABELS.end());
 }
 
+bool Variable::inArrayTable() {
+    return (ARRAY_TABLE.find(this->name) != ARRAY_TABLE.end());
+}
+
 std::string Variable::getName() {
     return name;
 }
@@ -203,3 +215,40 @@ int Goto::getRow() {
 void Goto::print() {
     std::cout << "[<row " << row << ">" << OPERTEXT[this->getType()] << "] ";
 }
+
+Array::Array(int size) {
+    data.resize(size);
+    for (int x: data) {
+        x = 0;
+    }
+}
+
+Lexem *Array::getElement(int index) {
+    if (0 <= index && index <= data.size() - 1) {
+        return new ArrayElement(this, index);
+    } else {
+        return nullptr;
+    }
+}
+
+ArrayElement::ArrayElement() {
+    data = nullptr;
+}
+
+ArrayElement::ArrayElement(Array *array, int index) {
+    this->data = &(array->data[index]);
+}
+
+LEXEM_TYPE ArrayElement::type() {
+    return ARRAY_ELEMENT;
+}
+
+int ArrayElement::getValue() const {
+    return *data;
+}
+
+void ArrayElement::setValue(int value) {
+    *data = value;
+}
+
+std::map<std::string, Array *> ARRAY_TABLE;
