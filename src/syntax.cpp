@@ -44,7 +44,9 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
                     result.push_back(operators.back());
                     operators.pop_back();
                 }
-            } else if (operators.back()->getPriority() >= lexem->getPriority() && operators.back()->getType() != LBRACKET) {
+                result.push_back(operators.back());
+                operators.pop_back();
+            } else if (operators.back()->getPriority() >= lexem->getPriority() && operators.back()->getType() != LBRACKET && operators.back()->getType() != LSQUARE) {
                 result.push_back(operators.back());
                 operators.pop_back();
                 operators.push_back(lexem);
@@ -57,11 +59,11 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
         result.push_back(operators.back());
         operators.pop_back();
     }
-    // for (int i = 0; i < result.size(); i++) {
-    //     std::cout << "|";
-    //     result[i]->print();
-    // }
-    // std::cout << std::endl;
+    for (int i = 0; i < result.size(); i++) {
+        std::cout << "|";
+        result[i]->print();
+    }
+    std::cout << std::endl;
     //cleanBrackets(brackets);
     return result;
 }
