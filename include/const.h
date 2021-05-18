@@ -5,6 +5,7 @@
 #include <map>
 
 enum OPERATOR {
+    PRINT,
     SIZE,
     IF, THEN,
     ELSE, ENDIF,

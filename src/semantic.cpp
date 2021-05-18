@@ -29,6 +29,9 @@ int evaluatePoliz(std::vector<Lexem *> &poliz, int row) {
                     clean(cleaner);
                     return lexemgoto->getRow();
                 }
+            } else if (poliz[i]->getType() == PRINT) {
+                std::cout << stack.back()->getValue() << std::endl;
+                stack.pop_back();
             } else {
                 Lexem* tmp2 = stack.back();
                 stack.pop_back();
@@ -40,9 +43,9 @@ int evaluatePoliz(std::vector<Lexem *> &poliz, int row) {
         }
     }
     //return stack.back()->getValue();
-    if (!stack.empty()) {
-        std::cout << stack.back()->getValue() << std::endl;
-    }
+    // if (!stack.empty()) {
+    //     std::cout << stack.back()->getValue() << std::endl;
+    // }
     clean(cleaner);
     return row + 1;
 }

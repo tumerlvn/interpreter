@@ -59,11 +59,11 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
         result.push_back(operators.back());
         operators.pop_back();
     }
-    for (int i = 0; i < result.size(); i++) {
-        std::cout << "|";
-        result[i]->print();
-    }
-    std::cout << std::endl;
+    // for (int i = 0; i < result.size(); i++) {
+    //     std::cout << "|";
+    //     result[i]->print();
+    // }
+    // std::cout << std::endl;
     //cleanBrackets(brackets);
     return result;
 }

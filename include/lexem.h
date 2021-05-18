@@ -86,6 +86,12 @@ public:
     void setValue(int value);
 };
 
+struct NameSpace {
+    std::map<std::string, int> variablesMap;
+    std::map<std::string, Array *> arraysMap;
+    std::vector<Lexem *> computationVector;
+};
+
 extern std::map<std::string, Array *> ARRAY_TABLE;
 
 #endif

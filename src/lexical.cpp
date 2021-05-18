@@ -21,7 +21,7 @@ Lexem* getOper(const std::string &codeline, int pos, int &next) {
         std::string subcodeline = codeline.substr(pos, OPERTEXT[op].size());
         if (OPERTEXT[op] == subcodeline) {
             next = pos + OPERTEXT[op].size();
-            if (op == GOTO || op == IF || op == ELSE || op == WHILE || op == ENDWHILE) {
+            if (op == GOTO || op == IF || op == ELSE || op == WHILE || op == ENDWHILE || op == ENDIF) {
                 return new Goto((OPERATOR)op);
             }
             return new Oper((OPERATOR)op);
@@ -146,6 +146,7 @@ void initJumps(std::vector <std::vector <Lexem *>> &infixLines) {
                 switch (lexemoper->getType()) {
                 case IF:
                     stackOfGoto.push((Goto *)lexemoper);
+                    std::cout << "if in stack" << '\n';
                     break;
                 case ELSE:
                     stackOfGoto.top()->setRow(row + 1);
@@ -157,17 +158,20 @@ void initJumps(std::vector <std::vector <Lexem *>> &infixLines) {
                     // lexemoper = nullptr;
                     stackOfGoto.top()->setRow(row + 1);
                     stackOfGoto.pop();
+                    std::cout << "endif: if out of stack" << '\n';
                     break;
                 case WHILE:
                     lexemgoto = (Goto *)lexemoper;
                     lexemgoto->setRow(row);
                     stackOfGoto.push(lexemgoto);
+                    std::cout << "while in stack" << '\n';
                     break;
                 case ENDWHILE:
                     lexemgoto = (Goto *)lexemoper;
                     lexemgoto->setRow(stackOfGoto.top()->getRow());
                     stackOfGoto.top()->setRow(row + 1);
                     stackOfGoto.pop();
+                    std::cout << "endwhile: while out of stack" << '\n';
                     break;
                 }
             }
