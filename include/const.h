@@ -5,6 +5,8 @@
 #include <map>
 
 enum OPERATOR {
+    RETURN,
+    FUNCTION,
     PRINT,
     SIZE,
     IF, THEN,
@@ -42,8 +44,7 @@ enum ERROR_CODES {
 extern const int PRIORITY[];
 extern const std::string OPERTEXT[];
 extern const int OP_NUM;
-extern std::map<std::string, int> MAP_OF_VARS;
-extern std::map<std::string, int> LABELS;
+
 
 
 #endif

@@ -24,9 +24,9 @@ int main() {
         code = initArrays(infixLines[row], row);
     }
 
-    for (std::map<std::string, Array *>::iterator it = ARRAY_TABLE.begin(); it != ARRAY_TABLE.end(); ++it) {
-        std::cout << it->first << std::endl;
-    }
+    // for (std::map<std::string, Array *>::iterator it = ARRAY_TABLE.begin(); it != ARRAY_TABLE.end(); ++it) {
+    //     std::cout << it->first << std::endl;
+    // }
 
     initJumps(infixLines);
 
@@ -34,10 +34,11 @@ int main() {
         postfixLines.push_back(buildPostfix(infix));
     }
 
-    int row = 0;
+    int row = initialPosition(postfixLines);
+    //std::cout << row << '\n';
     while (0 <= row && row < (int)postfixLines.size()) {
-        row = evaluatePoliz(postfixLines[row], row);
+        row = evaluatePoliz(postfixLines, row);
     }
-    clean(infixLines);
+    // clean(infixLines);
     return 0;
 }

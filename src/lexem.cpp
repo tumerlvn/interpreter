@@ -160,11 +160,13 @@ void Oper::print() {
 
 Variable::Variable() {
     name = "";
+    currentSpace = nullptr;
 }
 
 Variable::Variable(std::string name) {
     this->name = name;
     //this->setValue(0);
+    this->currentSpace = nullptr;
 }
 
 int Variable::getValue() const {
@@ -192,8 +194,16 @@ bool Variable::inArrayTable() {
     return (ARRAY_TABLE.find(this->name) != ARRAY_TABLE.end());
 }
 
+bool Variable::inFunctionTable() {
+    return ((currentSpace->funcMap).find(this->name) != (currentSpace->funcMap).end());
+}
+
 std::string Variable::getName() {
     return name;
+}
+
+void Variable::setSpace(NameSpace *newSpace) {
+    this->currentSpace = newSpace;
 }
 
 Goto::Goto(OPERATOR opertype) : Oper(opertype) {
@@ -252,3 +262,7 @@ void ArrayElement::setValue(int value) {
 }
 
 std::map<std::string, Array *> ARRAY_TABLE;
+std::map<std::string, int> MAP_OF_VARS;
+std::map<std::string, int> LABELS;
+std::map<std::string, Function> FUNCTION_TABLE;
+std::vector<Lexem *> GLOBAL_STACK;

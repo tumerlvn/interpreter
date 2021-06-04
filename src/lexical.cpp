@@ -88,6 +88,11 @@ std::vector<Lexem *> parseLexem(const std::string &codeline) {
             continue;
         }
     }
+    // for (int i = 0; i < res.size(); i++) {
+    //     std::cout << "|";
+    //     res[i]->print();
+    // }
+    // std::cout << std::endl;
     return res;
 }
 
@@ -105,27 +110,46 @@ void initLabels(std::vector <Lexem *> &infix, int row) {
                 i++;
             }
         }
+
     }
+    for (int i = 1; i < (int)infix.size() - 1; i++) {
+        if (infix[i-1]->type() == OPER && infix[i-1] -> getType() == FUNCTION) {
+            int magicConstant = i + 3;// 0x5f3759df  <- quake reference
+            Variable *lexemvar = (Variable *)infix[i];
+            FUNCTION_TABLE[lexemvar -> getName()].numOfArgs = infix.size() - magicConstant;//  i-1       i   i+1        size-1
+            FUNCTION_TABLE[lexemvar -> getName()].row = row;                               // function  func  (  a  b  c  )     args == (size-1) - (i+1) - 1
+            delete infix[i];
+            delete infix[i+1];
+            delete infix[infix.size() - 1];
+            infix[i+1] = nullptr;  // delete brackets
+            infix[infix.size() - 1] = nullptr;
+            infix[i] = nullptr;
+            return;
+        }
+    }
+
 }
 
 ERROR_CODES initArrays(std::vector <Lexem *> &infix, int row) {
     for (int i = 2; i < (int)infix.size(); i++) {
-        if (infix[i-2]->type() == VARIABLE && infix[i-1]->type() == OPER && infix[i]->type() == NUMBER) {
-            Variable *lexemvar = (Variable *)infix[i-2];
-            Oper *lexemop = (Oper *)infix[i-1];
-            Number *lexemnum = (Number *)infix[i];
-            if (lexemop->getType() == SIZE) {
-                if (lexemnum->getValue() <= 0) {
-                    return ARRAY_WRONG_SIZE;
+        if (infix[i-2] != nullptr && infix[i-1] != nullptr && infix[i] != nullptr) {
+            if (infix[i-2]->type() == VARIABLE && infix[i-1]->type() == OPER && infix[i]->type() == NUMBER) {
+                Variable *lexemvar = (Variable *)infix[i-2];
+                Oper *lexemop = (Oper *)infix[i-1];
+                Number *lexemnum = (Number *)infix[i];
+                if (lexemop->getType() == SIZE) {
+                    if (lexemnum->getValue() <= 0) {
+                        return ARRAY_WRONG_SIZE;
+                    }
+                    ARRAY_TABLE[lexemvar->getName()] = new Array(lexemnum->getValue());
+                    delete (Variable *)lexemvar;
+                    delete (Oper *)lexemop;
+                    delete (Number *)lexemnum;
+                    infix[i-2] = nullptr;
+                    infix[i-1] = nullptr;
+                    infix[i] = nullptr;
+                    i += 2;
                 }
-                ARRAY_TABLE[lexemvar->getName()] = new Array(lexemnum->getValue());
-                delete (Variable *)lexemvar;
-                delete (Oper *)lexemop;
-                delete (Number *)lexemnum;
-                infix[i-2] = nullptr;
-                infix[i-1] = nullptr;
-                infix[i] = nullptr;
-                i += 2;
             }
         }
     }
@@ -146,7 +170,7 @@ void initJumps(std::vector <std::vector <Lexem *>> &infixLines) {
                 switch (lexemoper->getType()) {
                 case IF:
                     stackOfGoto.push((Goto *)lexemoper);
-                    std::cout << "if in stack" << '\n';
+                    //std::cout << "if in stack" << '\n';
                     break;
                 case ELSE:
                     stackOfGoto.top()->setRow(row + 1);
@@ -158,20 +182,20 @@ void initJumps(std::vector <std::vector <Lexem *>> &infixLines) {
                     // lexemoper = nullptr;
                     stackOfGoto.top()->setRow(row + 1);
                     stackOfGoto.pop();
-                    std::cout << "endif: if out of stack" << '\n';
+                    //std::cout << "endif: if out of stack" << '\n';
                     break;
                 case WHILE:
                     lexemgoto = (Goto *)lexemoper;
                     lexemgoto->setRow(row);
                     stackOfGoto.push(lexemgoto);
-                    std::cout << "while in stack" << '\n';
+                    //std::cout << "while in stack" << '\n';
                     break;
                 case ENDWHILE:
                     lexemgoto = (Goto *)lexemoper;
                     lexemgoto->setRow(stackOfGoto.top()->getRow());
                     stackOfGoto.top()->setRow(row + 1);
                     stackOfGoto.pop();
-                    std::cout << "endwhile: while out of stack" << '\n';
+                    //std::cout << "endwhile: while out of stack" << '\n';
                     break;
                 }
             }

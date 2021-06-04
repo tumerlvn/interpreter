@@ -7,8 +7,9 @@
 #include "lexem.h"
 
 
-int evaluatePoliz(std::vector<Lexem *> &poliz, int row);
-void clean(std::vector<Lexem *> &cleaner);
-void clean(std::vector<std::vector<Lexem *>> &cleaner);
+int evaluatePoliz(std::vector <std::vector <Lexem *>>  &postfixLines, int row);
+int initialPosition(std::vector<std::vector<Lexem *>> postfixLines);
+// void clean(std::vector<Lexem *> &cleaner);
+// void clean(std::vector<std::vector<Lexem *>> &cleaner);
 
 #endif

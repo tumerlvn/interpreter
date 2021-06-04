@@ -14,6 +14,9 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
             Variable *lexemvar = (Variable *) lexem;
             if (lexemvar->inLabelTable()) {
                 joinGotoAndLabel(lexemvar, operators);
+            } else if (FUNCTION_TABLE.find(((Variable*)lexem) -> getName()) != FUNCTION_TABLE.end()) {
+                operators.push_back(lexem);
+                continue;
             } else {
                 result.push_back(lexemvar);
             }
@@ -21,6 +24,8 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
             result.push_back(lexem);
         } else if (lexem->type() == OPER || lexem->type() == OPERGOTO) {
             //Oper *lexemoper = (Oper *)lexem;
+
+
             if (lexem->getType() == ENDIF || lexem->getType() == THEN) {
                 // lexem->print();
                 // std::cout << std::endl;
@@ -38,7 +43,14 @@ std::vector<Lexem *> buildPostfix(const std::vector<Lexem *> &infix) {
                     result.push_back(operators.back());
                     operators.pop_back();
                 }
+                Lexem *lbracket = operators.back();
                 operators.pop_back();
+                if (operators.back()->type() == VARIABLE and FUNCTION_TABLE.find(((Variable*)operators.back())->getName()) != FUNCTION_TABLE.end() ) {
+                    result.push_back(lbracket);
+                    result.push_back(operators.back());
+                    operators.pop_back();
+                }
+                //operators.pop_back();
             } else if (lexem->getType() == RSQUARE) {
                 while (operators.back()->getType() != LSQUARE) {
                     result.push_back(operators.back());
@@ -75,9 +87,9 @@ void joinGotoAndLabel(Variable *lexemvar, std::vector<Lexem *> &operators) {
     }
 }
 
-void cleanBrackets(std::vector<Lexem *> &brackets) {
-    for (Lexem *bracket: brackets) {
-        delete (Oper *)bracket;
-        bracket = nullptr;
-    }
-}
+// void cleanBrackets(std::vector<Lexem *> &brackets) {
+//     for (Lexem *bracket: brackets) {
+//         delete (Oper *)bracket;
+//         bracket = nullptr;
+//     }
+// }

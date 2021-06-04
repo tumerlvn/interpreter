@@ -41,8 +41,11 @@ public:
     void print();
 };
 
+struct NameSpace;
+
 class Variable : public Lexem {
     std::string name;
+    NameSpace *currentSpace;
 public:
     Variable();
     Variable(std::string);
@@ -52,7 +55,9 @@ public:
     void print();
     bool inLabelTable();
     bool inArrayTable();
+    bool inFunctionTable();
     std::string getName();
+    void setSpace(NameSpace *newSpace);
 };
 
 class Goto : public Oper {
@@ -86,12 +91,24 @@ public:
     void setValue(int value);
 };
 
+struct Function;
+
 struct NameSpace {
     std::map<std::string, int> variablesMap;
     std::map<std::string, Array *> arraysMap;
     std::vector<Lexem *> computationVector;
+    std::map<std::string, Function *> funcMap;
+};
+
+struct Function {
+    int numOfArgs;
+    int row;
 };
 
 extern std::map<std::string, Array *> ARRAY_TABLE;
+extern std::map<std::string, int> MAP_OF_VARS;
+extern std::map<std::string, int> LABELS;
+extern std::map<std::string, Function> FUNCTION_TABLE;
+extern std::vector<Lexem *> GLOBAL_STACK;
 
 #endif
