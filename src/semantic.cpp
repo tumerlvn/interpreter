@@ -26,8 +26,6 @@ int evaluatePoliz(std::vector <std::vector <Lexem *>>  &postfixLines, int row) {
                 GLOBAL_STACK.push_back(stack.back());
                 stack.pop_back();
             }
-            //MAP_OF_VARS.clear();
-            //ARRAY_TABLE.clear();
             return -1;
         } else if (poliz[i] -> getType() == FUNCTION) {
             std::vector<Lexem *> reverseStack;
@@ -56,18 +54,10 @@ int evaluatePoliz(std::vector <std::vector <Lexem *>>  &postfixLines, int row) {
                     //GLOBAL_STACK.back()->print();
                     stack.pop_back();
                 }
-                // NameSpace *currentSpace = new NameSpace;
-                // currentSpace -> variablesMap = MAP_OF_VARS;
-                // currentSpace -> arraysMap = ARRAY_TABLE;
-                //MAP_OF_VARS.clear();
-                //ARRAY_TABLE.clear();
                 int tmp_row = FUNCTION_TABLE[((Variable*)functionName)->getName()].row;
                 while (tmp_row >= 0) {
                     tmp_row = evaluatePoliz(postfixLines, tmp_row);
                 }
-                //MAP_OF_VARS = currentSpace -> variablesMap;
-                //ARRAY_TABLE = currentSpace -> arraysMap;
-                //delete currentSpace;
                 if (!GLOBAL_STACK.empty()) {
                     stack.push_back(GLOBAL_STACK.back() );
                     GLOBAL_STACK.pop_back();
